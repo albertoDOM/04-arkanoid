@@ -1,7 +1,9 @@
 # SPEC 01 — MVP jugable de Arkanoid
 
-> **Estado:** Draft · **Depende de:** ninguna · **Fecha:** 2026-06-20
-> **Objetivo:** Implementar un Arkanoid mínimo jugable en un canvas de 800×600 con pala (ratón y teclado), bola de rebote predecible, una rejilla de 10×6 bloques que se destruyen, 3 vidas, puntuación de 10 puntos por bloque y pantallas de inicio, victoria y Game Over.
+- **Estado:** Aprobado 
+- **Fecha:** 2026-06-20
+- **Depende de:** ninguna (primer spec del proyecto)
+- **Objetivo:** Implementar un Arkanoid mínimo jugable en un canvas de 800×600 con pala (ratón y teclado), bola de rebote predecible, una rejilla de 10×6 bloques que se destruyen, 3 vidas, puntuación de 10 puntos por bloque y pantallas de inicio, victoria y Game Over.
 
 ---
 
@@ -18,6 +20,7 @@
 - Puntuación: 10 puntos por bloque destruido, visible en pantalla junto a las vidas (HUD).
 - Cuatro estados de juego: **inicio**, **jugando**, **victoria** (todos los bloques destruidos), **Game Over** (0 vidas).
 - Pantallas simples de inicio, victoria y Game Over, con reinicio mediante Enter o clic.
+- Overlay semitransparente de "GAME OVER" (o vidas) y "¡GANASTE!" (cuando se hayan destruido todos los bloques)
 
 **Fuera de alcance (para futuras specs):**
 

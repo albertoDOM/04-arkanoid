@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arkanoid</title>
+  <!-- Estilos mínimos inline: centrado en pantalla y fondo oscuro -->
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* El canvas se ve como un marco negro centrado */
+    #game {
+      background: #000;
+      display: block;
+      border: 1px solid #333;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="game" width="800" height="600"></canvas>
+
+  <!-- Sistema de sprites existente; debe cargarse antes que game.js -->
+  <script src="assets/spritesheet.js"></script>
+  <!-- Lógica del juego -->
+  <script src="game.js"></script>
+</body>
+</html>
