@@ -80,6 +80,19 @@ function placePaddle() {
   state.paddle.y = CONFIG.height - 40;
 }
 
+// Reinicia una partida nueva: puntuación 0, vidas completas, rejilla completa,
+// pala centrada, bola pegada y fase de inicio.
+function resetGame() {
+  state.phase = 'start';
+  state.score = 0;
+  state.lives = CONFIG.lives;
+  buildBricks();
+  placePaddle();
+  state.ball.stuck = true;
+  state.ball.vx = 0;
+  state.ball.vy = 0;
+}
+
 // ---------------------------------------------------------------------------
 // Bucle principal
 // ---------------------------------------------------------------------------
@@ -209,10 +222,13 @@ function updateBall() {
   if (b.y - b.r > CONFIG.height) loseLife();
 }
 
-// Actualiza la lógica del juego.
+// Actualiza la lógica del juego. Solo se simula durante la fase 'playing'.
 function update() {
+  if (state.phase !== 'playing') return;
   updatePaddle();
   updateBall();
+  // Victoria: todos los bloques destruidos.
+  if (state.bricks.every((brick) => !brick.alive)) state.phase = 'win';
 }
 
 // Dibuja los bloques vivos de la rejilla.
@@ -248,14 +264,48 @@ function renderHUD() {
   ctx.fillText('VIDAS: ' + state.lives, CONFIG.width - 12, 12);
 }
 
-// Dibuja el frame actual.
+// Dibuja un texto centrado horizontalmente a la altura dada.
+function drawCenteredText(text, y, font, color) {
+  ctx.fillStyle = color;
+  ctx.font = font;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, CONFIG.width / 2, y);
+}
+
+// Pantalla de inicio.
+function renderStartScreen() {
+  drawCenteredText('ARKANOID', CONFIG.height / 2 - 40, 'bold 56px monospace', '#fff');
+  drawCenteredText('Pulsa Enter o haz clic para jugar', CONFIG.height / 2 + 30, '24px monospace', '#ccc');
+}
+
+// Overlay semitransparente con un título y la puntuación (victoria / Game Over).
+function renderOverlay(title) {
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+  ctx.fillRect(0, 0, CONFIG.width, CONFIG.height);
+  drawCenteredText(title, CONFIG.height / 2 - 40, 'bold 56px monospace', '#fff');
+  drawCenteredText('Puntuación: ' + state.score, CONFIG.height / 2 + 20, '28px monospace', '#fff');
+  drawCenteredText('Pulsa Enter o haz clic para reiniciar', CONFIG.height / 2 + 70, '22px monospace', '#ccc');
+}
+
+// Dibuja el frame actual según la fase.
 function render() {
   // Limpia el canvas en cada frame.
   ctx.clearRect(0, 0, CONFIG.width, CONFIG.height);
+
+  if (state.phase === 'start') {
+    renderStartScreen();
+    return;
+  }
+
+  // 'playing', 'win' y 'gameover' muestran el tablero.
   renderBricks();
   renderPaddle();
   renderBall();
   renderHUD();
+
+  if (state.phase === 'win')      renderOverlay('¡GANASTE!');
+  if (state.phase === 'gameover') renderOverlay('GAME OVER');
 }
 
 // Bucle ligado a requestAnimationFrame.
@@ -290,21 +340,40 @@ window.addEventListener('keyup', (e) => {
   if (e.key === 'ArrowRight') state.input.right = false;
 });
 
-// Lanzamiento de la bola: barra espaciadora o clic.
-window.addEventListener('keydown', (e) => {
-  if (e.key === ' ' || e.code === 'Space') {
-    e.preventDefault(); // evita el scroll de la página
+// Acción principal (Enter o clic): avanza de pantalla o lanza la bola.
+function primaryAction() {
+  if (state.phase === 'start') {
+    state.phase = 'playing';
+  } else if (state.phase === 'win' || state.phase === 'gameover') {
+    resetGame(); // vuelve a la pantalla de inicio con una partida nueva
+  } else if (state.phase === 'playing') {
     launchBall();
+  }
+}
+
+// Enter: solo cambia de pantalla (no lanza la bola).
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    if (state.phase === 'start') state.phase = 'playing';
+    else if (state.phase === 'win' || state.phase === 'gameover') resetGame();
   }
 });
 
+// Barra espaciadora: lanza la bola durante el juego.
+window.addEventListener('keydown', (e) => {
+  if (e.key === ' ' || e.code === 'Space') {
+    e.preventDefault(); // evita el scroll de la página
+    if (state.phase === 'playing') launchBall();
+  }
+});
+
+// Clic: acción principal según la fase.
 canvas.addEventListener('click', () => {
-  launchBall();
+  primaryAction();
 });
 
 // Arranque: esperar a que la spritesheet esté lista antes de dibujar.
 loadSpritesheet(() => {
-  buildBricks();
-  placePaddle();
+  resetGame();
   loop();
 });
