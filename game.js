@@ -146,6 +146,26 @@ function collidePaddle() {
   b.y = p.y - b.r; // recoloca encima de la pala para no quedarse pegada
 }
 
+// Colisión bola-bloque. Detecta el primer bloque vivo que solapa la bola,
+// lo destruye, invierte solo la componente vertical y suma puntos.
+// Devuelve true si hubo impacto (para procesar uno solo por frame).
+function collideBricks() {
+  const b = state.ball;
+  for (const brick of state.bricks) {
+    if (!brick.alive) continue;
+    const overlaps =
+      b.x + b.r > brick.x && b.x - b.r < brick.x + brick.w &&
+      b.y + b.r > brick.y && b.y - b.r < brick.y + brick.h;
+    if (!overlaps) continue;
+
+    brick.alive = false;
+    b.vy = -b.vy;
+    state.score += CONFIG.pointsPerBlock;
+    return true;
+  }
+  return false;
+}
+
 // Actualiza la posición de la bola.
 // Mientras está pegada, sigue a la pala; al lanzarse, se mueve por sub-pasos
 // (cada uno ≤ medio bloque/pala) para evitar tunneling, rebotando en cada uno.
@@ -162,6 +182,9 @@ function updateBall() {
   const speed = Math.hypot(b.vx, b.vy);
   const steps = Math.max(1, Math.ceil(speed / maxStep));
 
+  // Solo se procesa un impacto con bloque por frame (mitiga dobles colisiones).
+  let brickHit = false;
+
   for (let i = 0; i < steps; i++) {
     // Usa la velocidad actual en cada sub-paso: si rebota a mitad de frame,
     // los sub-pasos restantes ya siguen la nueva dirección.
@@ -169,6 +192,7 @@ function updateBall() {
     b.y += b.vy / steps;
     collideWalls();
     collidePaddle();
+    if (!brickHit) brickHit = collideBricks();
   }
 }
 
