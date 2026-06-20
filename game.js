@@ -166,6 +166,16 @@ function collideBricks() {
   return false;
 }
 
+// Pierde una vida: deja la bola pegada de nuevo y, si no quedan vidas,
+// pasa a Game Over. Dejarla pegada también detiene su caída.
+function loseLife() {
+  state.lives--;
+  state.ball.stuck = true;
+  state.ball.vx = 0;
+  state.ball.vy = 0;
+  if (state.lives <= 0) state.phase = 'gameover';
+}
+
 // Actualiza la posición de la bola.
 // Mientras está pegada, sigue a la pala; al lanzarse, se mueve por sub-pasos
 // (cada uno ≤ medio bloque/pala) para evitar tunneling, rebotando en cada uno.
@@ -194,6 +204,9 @@ function updateBall() {
     collidePaddle();
     if (!brickHit) brickHit = collideBricks();
   }
+
+  // Caída por debajo de la pala: la bola sale del canvas por abajo.
+  if (b.y - b.r > CONFIG.height) loseLife();
 }
 
 // Actualiza la lógica del juego.
