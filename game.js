@@ -235,6 +235,19 @@ function renderBall() {
   drawSprite(ctx, 'ball', b.x - b.r, b.y - b.r, b.r * 2, b.r * 2);
 }
 
+// Dibuja el HUD: puntuación a la izquierda y vidas a la derecha.
+function renderHUD() {
+  ctx.fillStyle = '#fff';
+  ctx.font = '20px monospace';
+  ctx.textBaseline = 'top';
+
+  ctx.textAlign = 'left';
+  ctx.fillText('PUNTOS: ' + state.score, 12, 12);
+
+  ctx.textAlign = 'right';
+  ctx.fillText('VIDAS: ' + state.lives, CONFIG.width - 12, 12);
+}
+
 // Dibuja el frame actual.
 function render() {
   // Limpia el canvas en cada frame.
@@ -242,6 +255,7 @@ function render() {
   renderBricks();
   renderPaddle();
   renderBall();
+  renderHUD();
 }
 
 // Bucle ligado a requestAnimationFrame.
