@@ -1,6 +1,6 @@
 # SPEC 01 — MVP jugable de Arkanoid
 
-- **Estado:** Aprobado 
+- **Estado:** Implementado 
 - **Fecha:** 2026-06-20
 - **Depende de:** ninguna (primer spec del proyecto)
 - **Objetivo:** Implementar un Arkanoid mínimo jugable en un canvas de 800×600 con pala (ratón y teclado), bola de rebote predecible, una rejilla de 10×6 bloques que se destruyen, 3 vidas, puntuación de 10 puntos por bloque y pantallas de inicio, victoria y Game Over.
@@ -108,21 +108,21 @@ Cada paso deja el sistema ejecutable abriendo `index.html` en el navegador.
 
 ## Criterios de aceptación
 
-- [ ] La página carga abriendo `index.html` sin errores en la consola.
-- [ ] Se muestra una pantalla de inicio y la partida arranca con Enter o clic.
-- [ ] Al empezar (y tras perder vida) la bola aparece pegada a la pala y se lanza con clic o barra espaciadora.
-- [ ] La pala se mueve con el ratón y con las flechas ←/→, y nunca sale del canvas.
-- [ ] Se dibujan 60 bloques (10 columnas × 6 filas), un color por fila, centrados.
-- [ ] La bola rebota en las paredes laterales, el techo y la pala.
-- [ ] El ángulo de rebote en la pala cambia según el punto de impacto (centro = más vertical, extremos = más abierto).
-- [ ] La velocidad de la bola se mantiene constante durante toda la partida.
-- [ ] La bola nunca atraviesa un bloque ni la pala (se rompe/rebota el primer obstáculo en su trayectoria dentro del frame).
-- [ ] Romper un bloque lo elimina y suma exactamente 10 puntos.
-- [ ] El HUD muestra puntuación y vidas actualizadas en tiempo real.
-- [ ] Cuando la bola cae por debajo de la pala se pierde una vida.
-- [ ] Al llegar a 0 vidas se muestra la pantalla de Game Over.
-- [ ] Al destruir los 60 bloques se muestra la pantalla de Victoria.
-- [ ] Desde Victoria o Game Over, Enter o clic reinicia una partida nueva (puntuación 0, 3 vidas, rejilla completa).
+- [x] La página carga abriendo `index.html` sin errores en la consola.
+- [x] Se muestra una pantalla de inicio y la partida arranca con Enter o clic.
+- [x] Al empezar (y tras perder vida) la bola aparece pegada a la pala y se lanza con clic o barra espaciadora.
+- [x] La pala se mueve con el ratón y con las flechas ←/→, y nunca sale del canvas.
+- [x] Se dibujan 60 bloques (10 columnas × 6 filas), un color por fila, centrados.
+- [x] La bola rebota en las paredes laterales, el techo y la pala.
+- [x] El ángulo de rebote en la pala cambia según el punto de impacto (centro = más vertical, extremos = más abierto).
+- [x] La velocidad de la bola se mantiene constante durante toda la partida.
+- [x] La bola nunca atraviesa un bloque ni la pala (se rompe/rebota el primer obstáculo en su trayectoria dentro del frame).
+- [x] Romper un bloque lo elimina y suma exactamente 10 puntos.
+- [x] El HUD muestra puntuación y vidas actualizadas en tiempo real.
+- [x] Cuando la bola cae por debajo de la pala se pierde una vida.
+- [x] Al llegar a 0 vidas se muestra la pantalla de Game Over.
+- [x] Al destruir los 60 bloques se muestra la pantalla de Victoria.
+- [x] Desde Victoria o Game Over, Enter o clic reinicia una partida nueva (puntuación 0, 3 vidas, rejilla completa).
 
 ---
 
