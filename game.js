@@ -106,9 +106,34 @@ function updatePaddle() {
   p.x = clamp(p.x, 0, CONFIG.width - p.w);
 }
 
+// Lanza la bola hacia arriba si está pegada a la pala.
+// Sale con un ángulo ligeramente inclinado para evitar trayectorias verticales.
+function launchBall() {
+  if (!state.ball.stuck) return;
+  state.ball.stuck = false;
+  const angle = 0.35; // radianes respecto a la vertical (~20°)
+  state.ball.vx = CONFIG.ballSpeed * Math.sin(angle);
+  state.ball.vy = -CONFIG.ballSpeed * Math.cos(angle);
+}
+
+// Actualiza la posición de la bola.
+// Mientras está pegada, sigue a la pala; al lanzarse, integra su velocidad.
+// (La física de rebotes y sub-pasos se añade en el Paso 6.)
+function updateBall() {
+  const b = state.ball;
+  if (b.stuck) {
+    b.x = state.paddle.x + state.paddle.w / 2;
+    b.y = state.paddle.y - b.r;
+    return;
+  }
+  b.x += b.vx;
+  b.y += b.vy;
+}
+
 // Actualiza la lógica del juego.
 function update() {
   updatePaddle();
+  updateBall();
 }
 
 // Dibuja los bloques vivos de la rejilla.
@@ -125,12 +150,19 @@ function renderPaddle() {
   drawSprite(ctx, 'paddle', p.x, p.y, p.w, p.h);
 }
 
+// Dibuja la bola.
+function renderBall() {
+  const b = state.ball;
+  drawSprite(ctx, 'ball', b.x - b.r, b.y - b.r, b.r * 2, b.r * 2);
+}
+
 // Dibuja el frame actual.
 function render() {
   // Limpia el canvas en cada frame.
   ctx.clearRect(0, 0, CONFIG.width, CONFIG.height);
   renderBricks();
   renderPaddle();
+  renderBall();
 }
 
 // Bucle ligado a requestAnimationFrame.
@@ -163,6 +195,18 @@ window.addEventListener('keydown', (e) => {
 window.addEventListener('keyup', (e) => {
   if (e.key === 'ArrowLeft')  state.input.left = false;
   if (e.key === 'ArrowRight') state.input.right = false;
+});
+
+// Lanzamiento de la bola: barra espaciadora o clic.
+window.addEventListener('keydown', (e) => {
+  if (e.key === ' ' || e.code === 'Space') {
+    e.preventDefault(); // evita el scroll de la página
+    launchBall();
+  }
+});
+
+canvas.addEventListener('click', () => {
+  launchBall();
 });
 
 // Arranque: esperar a que la spritesheet esté lista antes de dibujar.
