@@ -116,9 +116,39 @@ function launchBall() {
   state.ball.vy = -CONFIG.ballSpeed * Math.cos(angle);
 }
 
+// Rebote en las paredes laterales y el techo. Reposiciona la bola dentro del
+// canvas y fija el signo de la velocidad para evitar dobles rebotes.
+function collideWalls() {
+  const b = state.ball;
+  if (b.x - b.r < 0)            { b.x = b.r;                 b.vx = Math.abs(b.vx); }
+  if (b.x + b.r > CONFIG.width) { b.x = CONFIG.width - b.r;  b.vx = -Math.abs(b.vx); }
+  if (b.y - b.r < 0)            { b.y = b.r;                 b.vy = Math.abs(b.vy); }
+}
+
+// Rebote en la pala: solo si la bola baja y solapa la pala. El ángulo de salida
+// depende del punto de impacto (centro = vertical, extremos = más abierto).
+// La velocidad se mantiene constante (magnitud = CONFIG.ballSpeed).
+function collidePaddle() {
+  const b = state.ball;
+  const p = state.paddle;
+  const overlaps =
+    b.vy > 0 &&
+    b.y + b.r >= p.y && b.y - b.r <= p.y + p.h &&
+    b.x + b.r >= p.x && b.x - b.r <= p.x + p.w;
+  if (!overlaps) return;
+
+  // Punto de impacto normalizado en [-1, 1] respecto al centro de la pala.
+  const hit = clamp((b.x - (p.x + p.w / 2)) / (p.w / 2), -1, 1);
+  const maxAngle = Math.PI / 3; // 60° máximo respecto a la vertical
+  const angle = hit * maxAngle;
+  b.vx = CONFIG.ballSpeed * Math.sin(angle);
+  b.vy = -CONFIG.ballSpeed * Math.cos(angle);
+  b.y = p.y - b.r; // recoloca encima de la pala para no quedarse pegada
+}
+
 // Actualiza la posición de la bola.
-// Mientras está pegada, sigue a la pala; al lanzarse, integra su velocidad.
-// (La física de rebotes y sub-pasos se añade en el Paso 6.)
+// Mientras está pegada, sigue a la pala; al lanzarse, se mueve por sub-pasos
+// (cada uno ≤ medio bloque/pala) para evitar tunneling, rebotando en cada uno.
 function updateBall() {
   const b = state.ball;
   if (b.stuck) {
@@ -126,8 +156,20 @@ function updateBall() {
     b.y = state.paddle.y - b.r;
     return;
   }
-  b.x += b.vx;
-  b.y += b.vy;
+
+  // Reparte el desplazamiento del frame en sub-pasos pequeños.
+  const maxStep = Math.min(LAYOUT.brickH, state.paddle.h) / 2;
+  const speed = Math.hypot(b.vx, b.vy);
+  const steps = Math.max(1, Math.ceil(speed / maxStep));
+
+  for (let i = 0; i < steps; i++) {
+    // Usa la velocidad actual en cada sub-paso: si rebota a mitad de frame,
+    // los sub-pasos restantes ya siguen la nueva dirección.
+    b.x += b.vx / steps;
+    b.y += b.vy / steps;
+    collideWalls();
+    collidePaddle();
+  }
 }
 
 // Actualiza la lógica del juego.
