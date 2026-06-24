@@ -174,6 +174,7 @@ function collideBricks() {
     if (!overlaps) continue;
 
     brick.alive = false;
+    state.explosions.push({ x: brick.x, y: brick.y, w: brick.w, h: brick.h, color: brick.color, startTime: performance.now() });
     b.vy = -b.vy;
     state.score += CONFIG.pointsPerBlock;
     return true;
