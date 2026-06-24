@@ -1,6 +1,6 @@
 # SPEC 02 — Animación de explosión al destruir bloques
 
-- **Estado:** Aprobado
+- **Estado:** Implementado
 - **Fecha:** 2026-06-24
 - **Depende de:** 01-mvp-arkanoid (implementado)
 - **Objetivo:** Reproducir una animación visual de 4 frames al destruir cada bloque, usando `EXPLOSION_FRAMES` y `EXPLOSION_DURATION` del spritesheet existente, almacenando las explosiones activas en `state.explosions` sin afectar la física del juego.
@@ -75,13 +75,13 @@ Cada paso deja el juego ejecutable abriendo `index.html`.
 
 ## Criterios de aceptación
 
-- [ ] Al romper un bloque, el bloque desaparece inmediatamente para colisiones (la bola no rebota contra él tras el impacto).
-- [ ] Al romper un bloque, se reproduce una animación de 4 frames sobre su posición con el color correspondiente.
-- [ ] La animación dura exactamente `EXPLOSION_DURATION` (150 ms) independientemente de la tasa de refresco del monitor.
-- [ ] Pueden existir varias explosiones simultáneas sin interferirse entre sí.
-- [ ] Al terminar la animación, la entrada se elimina de `state.explosions` sin dejar rastro visual.
-- [ ] Al reiniciar la partida, no quedan explosiones activas de la partida anterior.
-- [ ] El resto de la física y el HUD no sufren regresiones visibles.
+- [x] Al romper un bloque, el bloque desaparece inmediatamente para colisiones (la bola no rebota contra él tras el impacto).
+- [x] Al romper un bloque, se reproduce una animación de 4 frames sobre su posición con el color correspondiente.
+- [x] La animación dura exactamente `EXPLOSION_DURATION` (150 ms) independientemente de la tasa de refresco del monitor.
+- [x] Pueden existir varias explosiones simultáneas sin interferirse entre sí.
+- [x] Al terminar la animación, la entrada se elimina de `state.explosions` sin dejar rastro visual.
+- [x] Al reiniciar la partida, no quedan explosiones activas de la partida anterior.
+- [x] El resto de la física y el HUD no sufren regresiones visibles.
 
 ---
 
