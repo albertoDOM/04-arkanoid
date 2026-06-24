@@ -17,6 +17,20 @@ const CONFIG = {
 };
 
 // ---------------------------------------------------------------------------
+// Sonidos
+// ---------------------------------------------------------------------------
+const SOUNDS = {
+  bounce: new Audio('assets/sounds/ball-bounce.mp3'),
+  break:  new Audio('assets/sounds/break-sound.mp3'),
+};
+
+// Reproduce el sonido indicado clonando el nodo para permitir solapamiento.
+function playSound(name) {
+  if (!state.soundEnabled) return;
+  SOUNDS[name].cloneNode().play();
+}
+
+// ---------------------------------------------------------------------------
 // Estado global del juego
 // ---------------------------------------------------------------------------
 const state = {
@@ -28,6 +42,7 @@ const state = {
   bricks:     [],        // [{ x, y, w, h, color, alive }]
   explosions: [],        // [{ x, y, w, h, color, startTime }]
   input:  { left: false, right: false, mouseX: null },
+  soundEnabled: true,    // toggled con tecla S
 };
 
 // ---------------------------------------------------------------------------
