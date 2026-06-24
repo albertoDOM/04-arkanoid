@@ -107,6 +107,7 @@ function resetGame() {
   state.phase = 'start';
   state.score = 0;
   state.lives = CONFIG.lives;
+  state.level = 1;
   buildBricks();
   placePaddle();
   state.ball.stuck = true;
@@ -179,8 +180,9 @@ function collidePaddle() {
   const hit = clamp((b.x - (p.x + p.w / 2)) / (p.w / 2), -1, 1);
   const maxAngle = Math.PI / 3; // 60° máximo respecto a la vertical
   const angle = hit * maxAngle;
-  b.vx = CONFIG.ballSpeed * Math.sin(angle);
-  b.vy = -CONFIG.ballSpeed * Math.cos(angle);
+  const speed = CONFIG.levels[state.level - 1].ballSpeed;
+  b.vx = speed * Math.sin(angle);
+  b.vy = -speed * Math.cos(angle);
   b.y = p.y - b.r; // recoloca encima de la pala para no quedarse pegada
   playSound('bounce');
 }
@@ -373,9 +375,11 @@ canvas.addEventListener('mousemove', (e) => {
 
 // Teclado: flechas ←/→ mueven la pala. Pulsar una flecha desactiva el ratón
 // para que el teclado tome el control hasta el siguiente movimiento de ratón.
+// S conmuta el sonido on/off.
 window.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft')  { state.input.left = true;  state.input.mouseX = null; }
   if (e.key === 'ArrowRight') { state.input.right = true; state.input.mouseX = null; }
+  if (e.key === 's' || e.key === 'S') state.soundEnabled = !state.soundEnabled;
 });
 
 window.addEventListener('keyup', (e) => {
