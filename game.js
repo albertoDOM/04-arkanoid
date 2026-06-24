@@ -25,7 +25,8 @@ const state = {
   lives: CONFIG.lives,
   paddle: { x: 0, y: 0, w: 100, h: 14 },
   ball:   { x: 0, y: 0, vx: 0, vy: 0, r: 7, stuck: true }, // stuck = pegada a la pala
-  bricks: [],            // [{ x, y, w, h, color, alive }]
+  bricks:     [],        // [{ x, y, w, h, color, alive }]
+  explosions: [],        // [{ x, y, w, h, color, startTime }]
   input:  { left: false, right: false, mouseX: null },
 };
 
@@ -91,6 +92,7 @@ function resetGame() {
   state.ball.stuck = true;
   state.ball.vx = 0;
   state.ball.vy = 0;
+  state.explosions = [];
 }
 
 // ---------------------------------------------------------------------------
