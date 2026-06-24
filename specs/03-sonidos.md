@@ -1,6 +1,6 @@
 # SPEC 03 — Sonidos del juego
 
-- **Estado:** Aprobado
+- **Estado:** Implementado
 - **Fecha:** 2026-06-24
 - **Depende de:** 01-mvp-arkanoid (implementado), 02-animacion-explosion-bloques (implementado)
 - **Objetivo:** Reproducir `ball-bounce.mp3` en cada rebote de la bola (paredes, techo y pala, pero NO al impactar con bloques) y `break-sound.mp3` al destruir cada bloque, con sonidos solapables y un toggle on/off con la tecla S.
@@ -75,13 +75,13 @@ Cada paso deja el juego ejecutable abriendo `index.html`.
 
 ## Criterios de aceptación
 
-- [ ] Al romper un bloque se oye `break-sound.mp3`.
-- [ ] Al rebotar la bola en una pared lateral, el techo o la pala se oye `ball-bounce.mp3`.
-- [ ] Al impactar la bola con un bloque NO se oye `ball-bounce.mp3`.
-- [ ] Varios sonidos del mismo tipo reproducidos casi a la vez se solapan sin cortarse entre sí.
-- [ ] Pulsando `S` se silencia el sonido y el HUD muestra "SFX: OFF".
-- [ ] Pulsando `S` de nuevo se reactiva el sonido y el HUD muestra "SFX: ON".
-- [ ] Al reiniciar la partida, el sonido arranca en estado ON.
+- [x] Al romper un bloque se oye `break-sound.mp3`.
+- [x] Al rebotar la bola en una pared lateral, el techo o la pala se oye `ball-bounce.mp3`.
+- [x] Al impactar la bola con un bloque NO se oye `ball-bounce.mp3`.
+- [x] Varios sonidos del mismo tipo reproducidos casi a la vez se solapan sin cortarse entre sí.
+- [x] Pulsando `S` se silencia el sonido y el HUD muestra "SFX: OFF".
+- [x] Pulsando `S` de nuevo se reactiva el sonido y el HUD muestra "SFX: ON".
+- [x] Al reiniciar la partida, el sonido arranca en estado ON.
 
 ---
 

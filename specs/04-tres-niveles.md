@@ -1,6 +1,6 @@
 # SPEC 04 — Tres niveles de juego
 
-- **Estado:** Aprobado
+- **Estado:** Implementado
 - **Fecha:** 2026-06-24
 - **Depende de:** 01-mvp-arkanoid (implementado)
 - **Objetivo:** Añadir 3 niveles consecutivos al juego, donde cada nivel aumenta la velocidad de la bola, la partida progresa automáticamente al completar cada nivel con una pantalla intermedia, y las vidas y puntuación se conservan entre niveles.
@@ -77,13 +77,13 @@ Cada paso deja el juego ejecutable abriendo `index.html`.
 
 ## Criterios de aceptación
 
-- [ ] El HUD muestra el nivel actual durante la partida.
-- [ ] Al destruir todos los bloques del nivel 1 o 2 se muestra la pantalla "¡Nivel X completado!" en lugar de la victoria.
-- [ ] Desde esa pantalla, Enter o clic carga el siguiente nivel con la rejilla completa y la bola pegada a la pala.
-- [ ] Las vidas y la puntuación se conservan al pasar de nivel.
-- [ ] La velocidad de la bola en el nivel 2 es mayor que en el nivel 1, y en el nivel 3 mayor que en el nivel 2.
-- [ ] Al destruir todos los bloques del nivel 3 se muestra la pantalla de victoria existente.
-- [ ] Al reiniciar desde Game Over o Victoria, el juego vuelve al nivel 1 con la velocidad inicial.
+- [x] El HUD muestra el nivel actual durante la partida.
+- [x] Al destruir todos los bloques del nivel 1 o 2 se muestra la pantalla "¡Nivel X completado!" en lugar de la victoria.
+- [x] Desde esa pantalla, Enter o clic carga el siguiente nivel con la rejilla completa y la bola pegada a la pala.
+- [x] Las vidas y la puntuación se conservan al pasar de nivel.
+- [x] La velocidad de la bola en el nivel 2 es mayor que en el nivel 1, y en el nivel 3 mayor que en el nivel 2.
+- [x] Al destruir todos los bloques del nivel 3 se muestra la pantalla de victoria existente.
+- [x] Al reiniciar desde Game Over o Victoria, el juego vuelve al nivel 1 con la velocidad inicial.
 
 ---
 
