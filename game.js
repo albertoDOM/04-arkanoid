@@ -260,8 +260,10 @@ function update() {
   // Elimina las explosiones cuya duración ha expirado.
   const now = performance.now();
   state.explosions = state.explosions.filter((exp) => now - exp.startTime < EXPLOSION_DURATION);
-  // Victoria: todos los bloques destruidos.
-  if (state.bricks.every((brick) => !brick.alive)) state.phase = 'win';
+  // Todos los bloques destruidos: nivel completado o victoria final.
+  if (state.bricks.every((brick) => !brick.alive)) {
+    state.phase = state.level < 3 ? 'levelcomplete' : 'win';
+  }
 }
 
 // Dibuja los bloques vivos de la rejilla.
@@ -284,7 +286,7 @@ function renderBall() {
   drawSprite(ctx, 'ball', b.x - b.r, b.y - b.r, b.r * 2, b.r * 2);
 }
 
-// Dibuja el HUD: puntuación a la izquierda y vidas a la derecha.
+// Dibuja el HUD: puntuación izquierda, nivel centro, vidas derecha; SFX en segunda línea.
 function renderHUD() {
   ctx.fillStyle = '#fff';
   ctx.font = '20px monospace';
@@ -293,8 +295,16 @@ function renderHUD() {
   ctx.textAlign = 'left';
   ctx.fillText('PUNTOS: ' + state.score, 12, 12);
 
+  ctx.textAlign = 'center';
+  ctx.fillText('NIVEL: ' + state.level, CONFIG.width / 2, 12);
+
   ctx.textAlign = 'right';
   ctx.fillText('VIDAS: ' + state.lives, CONFIG.width - 12, 12);
+
+  ctx.font = '14px monospace';
+  ctx.fillStyle = '#888';
+  ctx.textAlign = 'center';
+  ctx.fillText(state.soundEnabled ? 'SFX: ON' : 'SFX: OFF', CONFIG.width / 2, 36);
 }
 
 // Dibuja un texto centrado horizontalmente a la altura dada.
@@ -332,6 +342,14 @@ function renderExplosions() {
   }
 }
 
+// Overlay de nivel completado: muestra el número de nivel y la instrucción de continuar.
+function renderLevelComplete() {
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+  ctx.fillRect(0, 0, CONFIG.width, CONFIG.height);
+  drawCenteredText('¡NIVEL ' + state.level + ' COMPLETADO!', CONFIG.height / 2 - 40, 'bold 48px monospace', '#fff');
+  drawCenteredText('Pulsa Enter o haz clic para continuar', CONFIG.height / 2 + 30, '22px monospace', '#ccc');
+}
+
 // Dibuja el frame actual según la fase.
 function render() {
   // Limpia el canvas en cada frame.
@@ -342,15 +360,16 @@ function render() {
     return;
   }
 
-  // 'playing', 'win' y 'gameover' muestran el tablero.
+  // 'playing', 'win', 'gameover' y 'levelcomplete' muestran el tablero.
   renderBricks();
   renderExplosions();
   renderPaddle();
   renderBall();
   renderHUD();
 
-  if (state.phase === 'win')      renderOverlay('¡GANASTE!');
-  if (state.phase === 'gameover') renderOverlay('GAME OVER');
+  if (state.phase === 'win')           renderOverlay('¡GANASTE!');
+  if (state.phase === 'gameover')      renderOverlay('GAME OVER');
+  if (state.phase === 'levelcomplete') renderLevelComplete();
 }
 
 // Bucle ligado a requestAnimationFrame.
@@ -387,10 +406,25 @@ window.addEventListener('keyup', (e) => {
   if (e.key === 'ArrowRight') state.input.right = false;
 });
 
+// Carga el siguiente nivel: incrementa state.level, regenera rejilla, reinicia bola.
+// Vidas y puntuación se conservan.
+function advanceLevel() {
+  state.level++;
+  buildBricks();
+  placePaddle();
+  state.ball.stuck = true;
+  state.ball.vx = 0;
+  state.ball.vy = 0;
+  state.explosions = [];
+  state.phase = 'playing';
+}
+
 // Acción principal (Enter o clic): avanza de pantalla o lanza la bola.
 function primaryAction() {
   if (state.phase === 'start') {
     state.phase = 'playing';
+  } else if (state.phase === 'levelcomplete') {
+    advanceLevel();
   } else if (state.phase === 'win' || state.phase === 'gameover') {
     resetGame(); // vuelve a la pantalla de inicio con una partida nueva
   } else if (state.phase === 'playing') {
@@ -402,6 +436,7 @@ function primaryAction() {
 window.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
     if (state.phase === 'start') state.phase = 'playing';
+    else if (state.phase === 'levelcomplete') advanceLevel();
     else if (state.phase === 'win' || state.phase === 'gameover') resetGame();
   }
 });
