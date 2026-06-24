@@ -12,8 +12,12 @@ const CONFIG = {
   cols: 10,
   rows: 6,
   rowColors: ['red', 'hotpink', 'yellow', 'green', 'cyan', 'magenta'], // fila 0 arriba
-  ballSpeed: 5,          // px/frame, constante
   paddleSpeed: 7,        // px/frame con teclado
+  levels: [
+    { ballSpeed: 5 },    // nivel 1
+    { ballSpeed: 7 },    // nivel 2
+    { ballSpeed: 9 },    // nivel 3
+  ],
 };
 
 // ---------------------------------------------------------------------------
@@ -34,9 +38,10 @@ function playSound(name) {
 // Estado global del juego
 // ---------------------------------------------------------------------------
 const state = {
-  phase: 'start',        // 'start' | 'playing' | 'win' | 'gameover'
+  phase: 'start',        // 'start' | 'playing' | 'win' | 'gameover' | 'levelcomplete'
   score: 0,
   lives: CONFIG.lives,
+  level: 1,              // nivel actual (1–3)
   paddle: { x: 0, y: 0, w: 100, h: 14 },
   ball:   { x: 0, y: 0, vx: 0, vy: 0, r: 7, stuck: true }, // stuck = pegada a la pala
   bricks:     [],        // [{ x, y, w, h, color, alive }]
@@ -189,6 +194,7 @@ function collideBricks() {
     if (!overlaps) continue;
 
     brick.alive = false;
+    playSound('break');
     state.explosions.push({ x: brick.x, y: brick.y, w: brick.w, h: brick.h, color: brick.color, startTime: performance.now() });
     b.vy = -b.vy;
     state.score += CONFIG.pointsPerBlock;
