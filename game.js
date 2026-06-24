@@ -230,6 +230,9 @@ function update() {
   if (state.phase !== 'playing') return;
   updatePaddle();
   updateBall();
+  // Elimina las explosiones cuya duración ha expirado.
+  const now = performance.now();
+  state.explosions = state.explosions.filter((exp) => now - exp.startTime < EXPLOSION_DURATION);
   // Victoria: todos los bloques destruidos.
   if (state.bricks.every((brick) => !brick.alive)) state.phase = 'win';
 }
@@ -291,6 +294,17 @@ function renderOverlay(title) {
   drawCenteredText('Pulsa Enter o haz clic para reiniciar', CONFIG.height / 2 + 70, '22px monospace', '#ccc');
 }
 
+// Dibuja las explosiones activas usando los frames del spritesheet.
+function renderExplosions() {
+  const now = performance.now();
+  for (const exp of state.explosions) {
+    const elapsed = now - exp.startTime;
+    const frameIndex = Math.min(Math.floor(elapsed / EXPLOSION_DURATION * 4), 3);
+    const frame = EXPLOSION_FRAMES[exp.color][frameIndex];
+    drawFrame(ctx, frame, exp.x, exp.y, exp.w, exp.h);
+  }
+}
+
 // Dibuja el frame actual según la fase.
 function render() {
   // Limpia el canvas en cada frame.
@@ -303,6 +317,7 @@ function render() {
 
   // 'playing', 'win' y 'gameover' muestran el tablero.
   renderBricks();
+  renderExplosions();
   renderPaddle();
   renderBall();
   renderHUD();
