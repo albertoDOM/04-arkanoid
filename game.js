@@ -147,17 +147,20 @@ function launchBall() {
   if (!state.ball.stuck) return;
   state.ball.stuck = false;
   const angle = 0.35; // radianes respecto a la vertical (~20°)
-  state.ball.vx = CONFIG.ballSpeed * Math.sin(angle);
-  state.ball.vy = -CONFIG.ballSpeed * Math.cos(angle);
+  const speed = CONFIG.levels[state.level - 1].ballSpeed;
+  state.ball.vx = speed * Math.sin(angle);
+  state.ball.vy = -speed * Math.cos(angle);
 }
 
 // Rebote en las paredes laterales y el techo. Reposiciona la bola dentro del
 // canvas y fija el signo de la velocidad para evitar dobles rebotes.
 function collideWalls() {
   const b = state.ball;
-  if (b.x - b.r < 0)            { b.x = b.r;                 b.vx = Math.abs(b.vx); }
-  if (b.x + b.r > CONFIG.width) { b.x = CONFIG.width - b.r;  b.vx = -Math.abs(b.vx); }
-  if (b.y - b.r < 0)            { b.y = b.r;                 b.vy = Math.abs(b.vy); }
+  let hit = false;
+  if (b.x - b.r < 0)            { b.x = b.r;                 b.vx = Math.abs(b.vx);  hit = true; }
+  if (b.x + b.r > CONFIG.width) { b.x = CONFIG.width - b.r;  b.vx = -Math.abs(b.vx); hit = true; }
+  if (b.y - b.r < 0)            { b.y = b.r;                 b.vy = Math.abs(b.vy);  hit = true; }
+  if (hit) playSound('bounce');
 }
 
 // Rebote en la pala: solo si la bola baja y solapa la pala. El ángulo de salida
@@ -179,6 +182,7 @@ function collidePaddle() {
   b.vx = CONFIG.ballSpeed * Math.sin(angle);
   b.vy = -CONFIG.ballSpeed * Math.cos(angle);
   b.y = p.y - b.r; // recoloca encima de la pala para no quedarse pegada
+  playSound('bounce');
 }
 
 // Colisión bola-bloque. Detecta el primer bloque vivo que solapa la bola,
