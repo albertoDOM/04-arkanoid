@@ -6,7 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Juego de Arkanoid/Breakout en **HTML, CSS y JavaScript con cero dependencias**, para jugar directamente en el navegador. El objetivo es que sea ejecutable abriendo un archivo HTML sin build ni servidor.
 
-**Estado actual:** el juego todavía NO está implementado. Por ahora solo existen los assets (spritesheet + sonidos), el sistema de dibujado de sprites (`assets/spritesheet.js`) y el flujo de trabajo basado en specs. No hay `index.html`, `specs/` ni código del juego aún.
+**Estado actual:** el juego está completamente implementado y jugable. Existen `index.html` y `game.js` con el juego funcionando, más 4 specs implementadas:
+
+- `specs/01-mvp-arkanoid.md` — MVP jugable (pala, bola, bloques, vidas, puntuación)
+- `specs/02-animacion-explosion-bloques.md` — Animación de explosión al destruir bloques
+- `specs/03-sonidos.md` — Sonidos de rebote y rotura de bloques con botón de mute
+- `specs/04-tres-niveles.md` — Tres niveles con velocidades de bola crecientes
 
 
 ## Flujo de trabajo: desarrollo dirigido por specs
